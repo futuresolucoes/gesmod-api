@@ -11,7 +11,7 @@ const sessionPayload = {
   password: '12345678'
 }
 
-test('it should return JWT token when session created', async ({client, assert }) => {
+test('it should return JWT token when session created', async ({ client, assert }) => {
   await Factory
     .model('App/Models/User')
     .create(sessionPayload)
@@ -24,7 +24,7 @@ test('it should return JWT token when session created', async ({client, assert }
   assert.exists(response.body.token)
 })
 
-test('it should return data user when session created', async({client}) => {
+test('it should return data user when session created', async ({ client }) => {
   const user = await Factory
     .model('App/Models/User')
     .create(sessionPayload)
@@ -44,7 +44,7 @@ test('it should return data user when session created', async({client}) => {
   })
 })
 
-test('it should return without user password when session created', async ({client, assert}) => {
+test('it should return without user password when session created', async ({ client, assert }) => {
   await Factory
     .model('App/Models/User')
     .create(sessionPayload)
@@ -53,9 +53,5 @@ test('it should return without user password when session created', async ({clie
     .send(sessionPayload)
     .end()
 
-  assert.isUndefined(response.body.user.password);
+  assert.isUndefined(response.body.user.password)
 })
-
-
-
-
