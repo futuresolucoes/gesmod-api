@@ -18,6 +18,8 @@ Factory.blueprint('App/Models/User', (faker, i, data = {}) => {
   return {
     name: faker.name(),
     email: faker.email(),
+    cpf: faker.cpf(),
+    is_admin: faker.integer({ min: 0, max: 1 }),
     ...data
   }
 })
