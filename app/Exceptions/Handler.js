@@ -36,6 +36,13 @@ class ExceptionHandler extends BaseExceptionHandler {
         .send({ Error: { message: 'Invalid or unsent token' } })
     }
 
+    // if (error.message.includes('ModelNotFoundException')) {
+    //   const getNameModel = error.message.split(' ')
+
+    //   return response.status(400)
+    //     .send({ Error: { message: `Not found ${getNameModel[7]}` } })
+    // }
+
     if (Env.get('NODE_ENV') === 'development') {
       const youch = new Youch(error, request.request)
       const errorJSON = await youch.toJSON()

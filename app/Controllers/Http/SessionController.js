@@ -8,16 +8,25 @@ const User = use('App/Models/User')
 
 class SessionController {
   async store ({ request, response, auth }) {
-    const { email, password } = request.only([
-      'email',
-      'password'
-    ])
+    try {
+      const { email, password } = request.only([
+        'email',
+        'password'
+      ])
 
-    const user = await User.findByOrFail('email', email)
+      const { token } = await auth.attempt(email, password)
 
-    const { token } = await auth.attempt(email, password)
+      const user = await User.findBy('email', email)
 
-    return { user, token }
+      return { user, token }
+    } catch (error) {
+      if (error.uidField) {
+        return response.status(401).send('E-mail incorrect')
+      }
+      if (error.passwordField) {
+        return response.status(401).send('Password incorrect')
+      }
+    }
   }
 }
 

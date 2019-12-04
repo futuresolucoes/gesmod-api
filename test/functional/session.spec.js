@@ -6,52 +6,94 @@ const Factory = use('Factory')
 trait('DatabaseTransactions')
 trait('Test/ApiClient')
 
-const sessionPayload = {
+const sessionPayloadToTest = {
   email: 'suporte@futuresolucoes.com.br',
   password: '12345678'
 }
 
-test('it should return JWT token when session created', async ({ client, assert }) => {
-  await Factory
-    .model('App/Models/User')
-    .create(sessionPayload)
+test('it should return JWT token when session created',
+  async ({ client, assert }) => {
+    await Factory
+      .model('App/Models/User')
+      .create(sessionPayloadToTest)
 
-  const response = await client.post('/sessions')
-    .send(sessionPayload)
-    .end()
+    const response = await client.post('/session')
+      .send(sessionPayloadToTest)
+      .end()
 
-  response.assertStatus(200)
-  assert.exists(response.body.token)
-})
-
-test('it should return data user when session created', async ({ client }) => {
-  const user = await Factory
-    .model('App/Models/User')
-    .create(sessionPayload)
-
-  const response = await client.post('/sessions')
-    .send(sessionPayload)
-    .end()
-
-  response.assertStatus(200)
-  response.assertJSONSubset({
-    user: {
-      name: user.name,
-      email: user.email,
-      cpf: user.cpf,
-      is_admin: user.is_admin
-    }
+    response.assertStatus(200)
+    assert.exists(response.body.token)
   })
-})
 
-test('it should return without user password when session created', async ({ client, assert }) => {
-  await Factory
-    .model('App/Models/User')
-    .create(sessionPayload)
+test('it should return data user when session created',
+  async ({ client }) => {
+    const user = await Factory
+      .model('App/Models/User')
+      .create(sessionPayloadToTest)
 
-  const response = await client.post('/sessions')
-    .send(sessionPayload)
-    .end()
+    const response = await client.post('/session')
+      .send(sessionPayloadToTest)
+      .end()
 
-  assert.isUndefined(response.body.user.password)
-})
+    response.assertStatus(200)
+    response.assertJSONSubset({
+      user: {
+        name: user.name,
+        email: user.email,
+        cpf: user.cpf,
+        is_admin: user.is_admin
+      }
+    })
+  })
+
+test('it should return without user password when session created',
+  async ({ client, assert }) => {
+    await Factory
+      .model('App/Models/User')
+      .create(sessionPayloadToTest)
+
+    const response = await client.post('/session')
+      .send(sessionPayloadToTest)
+      .end()
+
+    assert.isUndefined(response.body.user.password)
+  })
+
+test('it should return status 401 when not found email in session create',
+  async ({ client }) => {
+    const payloadWithWrongEmail = {
+      email: 'suporte@futuresolucoes.com',
+      password: '12345678'
+    }
+
+    await Factory
+      .model('App/Models/User')
+      .create(sessionPayloadToTest)
+
+    const response = await client.post('/session')
+      .send(payloadWithWrongEmail)
+      .end()
+
+    response.assertStatus(401)
+    response.assertText('E-mail incorrect')
+  })
+
+test('it should return status 401 when password does not match in session create',
+  async ({ client }) => {
+    const payloadWithWrongPassword = {
+      email: 'suporte@futuresolucoes.com.br',
+      password: '123456'
+    }
+
+    await Factory
+      .model('App/Models/User')
+      .create(sessionPayloadToTest)
+
+    const response = await client.post('/session')
+      .send(payloadWithWrongPassword)
+      .end()
+
+    response.assertStatus(401)
+    response.assertText('Password incorrect')
+  }
+)
