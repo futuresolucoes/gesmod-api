@@ -82,7 +82,7 @@ test('it should return status 401 when password does not match in session create
   async ({ client }) => {
     const payloadWithWrongPassword = {
       email: 'suporte@futuresolucoes.com.br',
-      password: '123456'
+      password: '123456789'
     }
 
     await Factory
@@ -95,5 +95,55 @@ test('it should return status 401 when password does not match in session create
 
     response.assertStatus(401)
     response.assertText('Password incorrect')
+  }
+)
+
+test('it should return status 400 and validator response when email is not passed',
+  async ({ client }) => {
+    const payloadWithoutPassword = {
+      password: '12345678'
+    }
+
+    await Factory
+      .model('App/Models/User')
+      .create(sessionPayloadToTest)
+
+    const response = await client.post('/session')
+      .send(payloadWithoutPassword)
+      .end()
+
+    response.assertStatus(400)
+    response.assertError([
+      {
+        message: 'required validation failed on email',
+        field: 'email',
+        validation: 'required'
+      }
+    ])
+  }
+)
+
+test('it should return status 400 and validator response when password is not passed',
+  async ({ client }) => {
+    const payloadWithoutPassword = {
+      email: 'suporte@futuresolucoes.com.br'
+    }
+
+    await Factory
+      .model('App/Models/User')
+      .create(sessionPayloadToTest)
+
+    const response = await client.post('/session')
+      .send(payloadWithoutPassword)
+      .end()
+
+    response.assertStatus(400)
+    response.assertError([
+      {
+        message: 'required validation failed on password',
+        field: 'password',
+        validation: 'required'
+      }
+    ])
   }
 )

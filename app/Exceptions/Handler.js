@@ -63,6 +63,9 @@ class ExceptionHandler extends BaseExceptionHandler {
    * @return {void}
    */
   async report (error, { request }) {
+    if (Env.get('NODE_ENV') === 'testing') {
+      return
+    }
     console.log(error)
   }
 }

@@ -4,3 +4,4 @@
 const Route = use('Route')
 
 Route.post('/session', 'SessionController.store')
+  .validator('Session/Store')
