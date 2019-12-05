@@ -121,8 +121,6 @@ test('it should return status 400 when CPF parameter already exists',
       .send(payloadToTest.toJSON())
       .end()
 
-    console.log(response)
-
     response.assertStatus(400)
     response.assertJSONSubset([
       {
@@ -132,3 +130,25 @@ test('it should return status 400 when CPF parameter already exists',
       }
     ])
   })
+
+test('it should return with token and token_created_at when created user',
+  async ({ client, assert }) => {
+    const payloadToTest = {
+      name: 'nome demonstração',
+      email: 'demo@email.com'
+    }
+
+    const userLoged = await Factory
+      .model('App/Models/User')
+      .create({ is_admin: 1 })
+
+    const response = await client.post('/user')
+      .send(payloadToTest)
+      .loginVia(userLoged, 'jwt')
+      .end()
+
+    response.assertStatus(200)
+    assert.exists(response.body.token)
+    assert.exists(response.body.token_created_at)
+  }
+)
