@@ -14,8 +14,6 @@ class UserSchema extends Schema {
       table.string('phone', 20)
       table.boolean('is_admin').defaultTo(0)
       table.boolean('email_is_confirmed').defaultTo(0)
-      table.string('token')
-      table.datetime('token_created_at')
       table.timestamps()
     })
   }

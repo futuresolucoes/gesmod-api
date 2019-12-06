@@ -9,6 +9,7 @@ const jobToSendEmailConfirmRegister = use('App/Jobs/SendMailToConfirmRegister')
 /** @typedef {import('@adonisjs/framework/src/Response')} Response */
 /** @typedef {import('@adonisjs/auth/src/Schemes/Session')} AuthSession */
 
+/** @type {typeof import('@adonisjs/lucid/src/Lucid/Model')} */
 const User = use('App/Models/User')
 
 class UserController {
@@ -25,12 +26,22 @@ class UserController {
         return response.status(401).send('Without permission to create user.')
       }
 
-      dataToNewUser.token = crypto.randomBytes(10).toString('hex')
-      dataToNewUser.token_created_at = new Date()
-
-      Kue.dispatch(jobToSendEmailConfirmRegister.key, dataToNewUser, { attemps: 3 })
-
       const newUser = await User.create(dataToNewUser)
+
+      const token = crypto.randomBytes(32).toString('hex')
+
+      const infoToEmail = {
+        name: newUser.name,
+        email: newUser.email,
+        token
+      }
+
+      Kue.dispatch(jobToSendEmailConfirmRegister.key, infoToEmail, { attemps: 3 })
+
+      newUser.tokens().create({
+        token,
+        type: 'confirm_register'
+      })
 
       return newUser
     } catch (error) {

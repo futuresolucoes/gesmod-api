@@ -2,6 +2,7 @@ const { test, trait } = use('Test/Suite')('User')
 
 /** @type {import('@adonisjs/lucid/src/Factory')} */
 const Factory = use('Factory')
+const Token = use('App/Models/Token')
 
 trait('DatabaseTransactions')
 trait('Test/ApiClient')
@@ -27,7 +28,7 @@ test('it should return status 401 when user dont is admin',
     response.assertText('Without permission to create user.')
   })
 
-test('it should return the user ID when the user is created by an admin user',
+test('it should return the user ID when the user is created',
   async ({ client, assert }) => {
     const payloadToTest = {
       name: 'nome demonstração',
@@ -131,7 +132,7 @@ test('it should return status 400 when CPF parameter already exists',
     ])
   })
 
-test('it should return with token and token_created_at when created user',
+test('it should save token type equal confirm_register when created user',
   async ({ client, assert }) => {
     const payloadToTest = {
       name: 'nome demonstração',
@@ -147,8 +148,12 @@ test('it should return with token and token_created_at when created user',
       .loginVia(userLoged, 'jwt')
       .end()
 
+    const { token } = await Token.query()
+      .where('user_id', response.body.id)
+      .where('type', 'confirm_register')
+      .first()
+
     response.assertStatus(200)
-    assert.exists(response.body.token)
-    assert.exists(response.body.token_created_at)
+    assert.exists(token)
   }
 )
