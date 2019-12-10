@@ -29,7 +29,7 @@ class ConfirmRegisterController {
       const user = await User.find(token.user_id)
 
       user.password = chance.string({ length: 8, alpha: true, numeric: true })
-      user.is_active = true
+      user.is_confirmed = true
 
       const infoToEmail = {
         name: user.name,

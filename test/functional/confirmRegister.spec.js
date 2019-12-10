@@ -44,7 +44,7 @@ test('it should return status 200, active user, create password and delete token
 
     responseRouteConfirmRegister.assertStatus(200)
     assert.isNotNull(userReload.password)
-    assert.isTrue(userReload.isActive())
+    assert.equal(userReload.is_confirmed, 1)
 
     const tokenReload = await user.tokens().where('token', userToken.token).first()
 
