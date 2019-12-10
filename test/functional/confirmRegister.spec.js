@@ -13,7 +13,7 @@ trait('DatabaseTransactions')
 trait('Test/ApiClient')
 trait('Auth/Client')
 
-test('it should return status 200, active user and create password',
+test('it should return status 200, active user, create password and delete token',
   async ({ client, assert }) => {
     const payloadToTest = {
       name: 'nome demonstração',
@@ -45,6 +45,10 @@ test('it should return status 200, active user and create password',
     responseRouteConfirmRegister.assertStatus(200)
     assert.isNotNull(userReload.password)
     assert.isTrue(userReload.isActive())
+
+    const tokenReload = await user.tokens().where('token', userToken.token).first()
+
+    assert.isNull(tokenReload)
   })
 
 test('it should return status 400 when token has been expired',
@@ -102,3 +106,13 @@ test('it should return status 400 when type token not is equal confirm register'
     ])
   }
 )
+
+test('it should return status 404 when token not found',
+  async ({ client }) => {
+    const response = await client.post('/confirm_register')
+      .send({ token: 'anystring' })
+      .end()
+
+    response.assertStatus(404)
+    response.assertText('Token not found.')
+  })

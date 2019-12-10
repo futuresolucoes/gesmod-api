@@ -16,14 +16,14 @@ class ConfirmRegisterController {
     try {
       const { token: tokenReceived } = request.only(['token'])
 
-      const token = await Token.findBy('token', tokenReceived)
-
-      if (token.expired()) {
-        return response.status(400).send('Token has been expired.')
-      }
+      const token = await Token.findByOrFail('token', tokenReceived)
 
       if (token.type !== 'confirm_register') {
         return response.status(400).send('This token not is to confirm register.')
+      }
+
+      if (token.expired()) {
+        return response.status(400).send('Token has been expired.')
       }
 
       const user = await User.find(token.user_id)
@@ -41,9 +41,14 @@ class ConfirmRegisterController {
 
       await user.save()
 
+      await token.delete()
+
       return user
     } catch (error) {
-      return response.status(500).send(error)
+      if (error.message.includes('E_MISSING_DATABASE_ROW')) {
+        return response.status(error.status).send('Token not found.')
+      }
+      throw new Error(error)
     }
   }
 }
