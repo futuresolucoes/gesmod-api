@@ -29,6 +29,7 @@
     "@adonisjs/validator": "^5.0.6",
     "@adonisjs/vow": "^1.0.17",
     "adonis-kue": "^5.0.1",
+    "date-fns": "^2.8.1",
     "knex": "^0.19.5",
     "mysql": "^2.17.1"
   },
