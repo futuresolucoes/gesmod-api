@@ -13,7 +13,7 @@ class UserSchema extends Schema {
       table.string('cpf', 11).unique()
       table.string('phone', 20)
       table.boolean('is_admin').defaultTo(0)
-      table.boolean('email_is_confirmed').defaultTo(0)
+      table.boolean('is_active').defaultTo(0)
       table.timestamps()
     })
   }

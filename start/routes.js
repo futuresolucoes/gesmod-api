@@ -6,6 +6,8 @@ const Route = use('Route')
 Route.post('/session', 'SessionController.store')
   .validator('Session/Store')
 
+Route.post('/confirm_register', 'ConfirmRegisterController.store')
+
 Route.resource('user', 'UserController')
   .apiOnly()
   .validator(new Map([
