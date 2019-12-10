@@ -85,3 +85,20 @@ test('it should return status 400 when type token not is equal confirm register'
     response.assertText('This token not is to confirm register.')
   }
 )
+
+test('it should return status 400 when type token not is equal confirm register',
+  async ({ client }) => {
+    const response = await client.post('/confirm_register')
+      .send()
+      .end()
+
+    response.assertStatus(400)
+    response.assertError([
+      {
+        message: 'required validation failed on token',
+        field: 'token',
+        validation: 'required'
+      }
+    ])
+  }
+)

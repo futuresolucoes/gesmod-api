@@ -7,6 +7,7 @@ Route.post('/session', 'SessionController.store')
   .validator('Session/Store')
 
 Route.post('/confirm_register', 'ConfirmRegisterController.store')
+  .validator('ConfirmRegister/Store')
 
 Route.resource('user', 'UserController')
   .apiOnly()
