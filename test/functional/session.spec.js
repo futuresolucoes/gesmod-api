@@ -11,8 +11,12 @@ const sessionPayloadToTest = {
   password: '12345678'
 }
 
-test('it should return JWT token when session created',
+test('it should return JWT token and user data without password',
   async ({ client, assert }) => {
+    const sessionPayloadToTest = {
+      email: 'suporte@futuresolucoes.com.br',
+      password: '12345678'
+    }
     await Factory
       .model('App/Models/User')
       .create(sessionPayloadToTest)
@@ -23,59 +27,8 @@ test('it should return JWT token when session created',
 
     response.assertStatus(200)
     assert.exists(response.body.token)
-  })
-
-test('it should return data user when session created',
-  async ({ client }) => {
-    const user = await Factory
-      .model('App/Models/User')
-      .create(sessionPayloadToTest)
-
-    const response = await client.post('/session')
-      .send(sessionPayloadToTest)
-      .end()
-
-    response.assertStatus(200)
-    response.assertJSONSubset({
-      user: {
-        name: user.name,
-        email: user.email,
-        cpf: user.cpf,
-        is_admin: user.is_admin
-      }
-    })
-  })
-
-test('it should return without user password when session created',
-  async ({ client, assert }) => {
-    await Factory
-      .model('App/Models/User')
-      .create(sessionPayloadToTest)
-
-    const response = await client.post('/session')
-      .send(sessionPayloadToTest)
-      .end()
-
+    assert.exists(response.body.user)
     assert.isUndefined(response.body.user.password)
-  })
-
-test('it should return status 401 when not found email in session create',
-  async ({ client }) => {
-    const payloadWithWrongEmail = {
-      email: 'suporte@futuresolucoes.com',
-      password: '12345678'
-    }
-
-    await Factory
-      .model('App/Models/User')
-      .create(sessionPayloadToTest)
-
-    const response = await client.post('/session')
-      .send(payloadWithWrongEmail)
-      .end()
-
-    response.assertStatus(401)
-    response.assertText('E-mail incorrect')
   })
 
 test('it should return status 401 when password does not match in session create',
@@ -95,55 +48,5 @@ test('it should return status 401 when password does not match in session create
 
     response.assertStatus(401)
     response.assertText('Password incorrect')
-  }
-)
-
-test('it should return status 400 and validator response when email is not passed',
-  async ({ client }) => {
-    const payloadWithoutPassword = {
-      password: '12345678'
-    }
-
-    await Factory
-      .model('App/Models/User')
-      .create(sessionPayloadToTest)
-
-    const response = await client.post('/session')
-      .send(payloadWithoutPassword)
-      .end()
-
-    response.assertStatus(400)
-    response.assertError([
-      {
-        message: 'required validation failed on email',
-        field: 'email',
-        validation: 'required'
-      }
-    ])
-  }
-)
-
-test('it should return status 400 and validator response when password is not passed',
-  async ({ client }) => {
-    const payloadWithoutPassword = {
-      email: 'suporte@futuresolucoes.com.br'
-    }
-
-    await Factory
-      .model('App/Models/User')
-      .create(sessionPayloadToTest)
-
-    const response = await client.post('/session')
-      .send(payloadWithoutPassword)
-      .end()
-
-    response.assertStatus(400)
-    response.assertError([
-      {
-        message: 'required validation failed on password',
-        field: 'password',
-        validation: 'required'
-      }
-    ])
   }
 )

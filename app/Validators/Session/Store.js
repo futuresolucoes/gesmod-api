@@ -7,7 +7,7 @@ class SessionStore {
 
   get rules () {
     return {
-      email: 'required|email|max:100',
+      email: 'required|exists:users,email|email|max:100',
       password: 'required|string|min:8|max:32'
     }
   }

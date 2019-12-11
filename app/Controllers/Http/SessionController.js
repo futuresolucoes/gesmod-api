@@ -20,9 +20,6 @@ class SessionController {
 
       return { user, token }
     } catch (error) {
-      if (error.uidField) {
-        return response.status(401).send('E-mail incorrect')
-      }
       if (error.passwordField) {
         return response.status(401).send('Password incorrect')
       }

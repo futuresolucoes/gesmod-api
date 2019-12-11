@@ -13,7 +13,7 @@ trait('DatabaseTransactions')
 trait('Test/ApiClient')
 trait('Auth/Client')
 
-test('it should return status 200, active user, create password and delete token',
+test('it should return status 200, confirm new user, create password and delete token',
   async ({ client, assert }) => {
     const payloadToTest = {
       name: 'nome demonstração',
@@ -87,23 +87,6 @@ test('it should return status 400 when type token not is equal confirm register'
 
     response.assertStatus(400)
     response.assertText('This token not is to confirm register.')
-  }
-)
-
-test('it should return status 400 when type token not is equal confirm register',
-  async ({ client }) => {
-    const response = await client.post('/confirm_register')
-      .send()
-      .end()
-
-    response.assertStatus(400)
-    response.assertError([
-      {
-        message: 'required validation failed on token',
-        field: 'token',
-        validation: 'required'
-      }
-    ])
   }
 )
 

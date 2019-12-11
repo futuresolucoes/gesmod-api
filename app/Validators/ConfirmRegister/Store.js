@@ -3,7 +3,7 @@
 class ConfirmRegisterStore {
   get rules () {
     return {
-      token: 'required'
+      token: 'required|exists:tokens,token'
     }
   }
 }
