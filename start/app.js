@@ -23,6 +23,7 @@ const providers = [
   '@adonisjs/framework/providers/ViewProvider',
   '@adonisjs/redis/providers/RedisProvider',
   'adonis-kue/providers/KueProvider',
+  '@adonisjs/antl/providers/AntlProvider',
   path.join(__dirname, '..', 'providers', 'CustomValidationProvider')
 ]
 

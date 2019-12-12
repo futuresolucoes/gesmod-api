@@ -1,5 +1,7 @@
 'use strict'
 
+const Antl = use('Antl')
+
 class UserStore {
   get validateAll () {
     return true
@@ -15,15 +17,7 @@ class UserStore {
   }
 
   get messages () {
-    return {
-      'name.min': 'min validation failed on first_name, expected min 3 characters',
-      'name.max': 'max validation failed on first_name, expected max 60 characters',
-      'cpf.min': 'min validation failed on cpf, expected min 11 characters',
-      'cpf.max': 'max validation failed on cpf, expected max 11 characters',
-      'email.max': 'max validation failed on email, expected max 100 characters',
-      'phone.min': 'min validation failed on phone, expected min 10 characters',
-      'phone.max': 'max validation failed on phone, expected max 20 characters'
-    }
+    return Antl.list('validation')
   }
 
   get sanitizationRules () {
