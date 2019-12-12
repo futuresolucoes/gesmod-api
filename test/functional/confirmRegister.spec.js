@@ -89,13 +89,3 @@ test('it should return status 400 when type token not is equal confirm register'
     response.assertText('This token not is to confirm register.')
   }
 )
-
-test('it should return status 404 when token not found',
-  async ({ client }) => {
-    const response = await client.post('/confirm_register')
-      .send({ token: 'anystring' })
-      .end()
-
-    response.assertStatus(404)
-    response.assertText('Token not found.')
-  })

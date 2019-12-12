@@ -45,9 +45,6 @@ class ConfirmRegisterController {
 
       return user
     } catch (error) {
-      if (error.message.includes('E_MISSING_DATABASE_ROW')) {
-        return response.status(error.status).send('Token not found.')
-      }
       throw new Error(error)
     }
   }
