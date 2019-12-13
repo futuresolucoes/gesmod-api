@@ -14,3 +14,6 @@ Route.resource('user', 'UserController')
   .validator(new Map([
     [['user.store'], ['User/Store']]
   ]))
+
+Route.post('/resend_token_confirm_register', 'ResendTokenConfirmRegisterController.store')
+  .validator('ResendTokenConfirmRegister/Store')
