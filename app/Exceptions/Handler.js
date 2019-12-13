@@ -43,7 +43,7 @@ class ExceptionHandler extends BaseExceptionHandler {
     //     .send({ Error: { message: `Not found ${getNameModel[7]}` } })
     // }
 
-    if (Env.get('NODE_ENV') === 'development') {
+    if (Env.get('NODE_ENV') === 'development' || Env.get('NODE_ENV') === 'testing') {
       const youch = new Youch(error, request.request)
       const errorJSON = await youch.toJSON()
       return response.status(error.status).send(errorJSON)
@@ -63,9 +63,9 @@ class ExceptionHandler extends BaseExceptionHandler {
    * @return {void}
    */
   async report (error, { request }) {
-    if (Env.get('NODE_ENV') === 'testing') {
-      return
-    }
+    // if (Env.get('NODE_ENV') === 'testing') {
+    //   return
+    // }
     console.log(error)
   }
 }
