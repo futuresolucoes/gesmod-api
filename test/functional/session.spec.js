@@ -25,7 +25,7 @@ test('it should return JWT token and user data without password',
       .send(sessionPayloadToTest)
       .end()
 
-    response.assertStatus(200)
+    response.assertStatus(201)
     assert.exists(response.body.token)
     assert.exists(response.body.user)
     assert.isUndefined(response.body.user.password)

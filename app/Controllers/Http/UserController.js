@@ -38,11 +38,12 @@ class UserController {
 
       Kue.dispatch(jobToSendEmailConfirmRegister.key, infoToEmail, { attemps: 3 })
 
-      newUser.tokens().create({
+      await newUser.tokens().create({
         token,
         type: 'confirm_register'
       })
 
+      return response.status(201).send(newUser)
       return newUser
     } catch (error) {
       throw new Error(error)

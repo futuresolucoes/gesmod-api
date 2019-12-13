@@ -18,7 +18,7 @@ class SessionController {
 
       const user = await User.findBy('email', email)
 
-      return { user, token }
+      return response.status(201).send({ user, token })
     } catch (error) {
       if (error.passwordField) {
         return response.status(401).send('Password incorrect')

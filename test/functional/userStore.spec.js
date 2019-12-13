@@ -43,6 +43,6 @@ test('it should return the user ID when the user is created',
       .loginVia(userLoged, 'jwt')
       .end()
 
-    response.assertStatus(200)
+    response.assertStatus(201)
     assert.exists(response.body.id)
   })
