@@ -7,7 +7,7 @@ trait('DatabaseTransactions')
 trait('Test/ApiClient')
 trait('Auth/Client')
 
-test('it should return status 201 when new token to confirm register is requested',
+test('it should return status 201 and the number of confirm register tokens equal to one',
   async ({ client, assert }) => {
     const user = await Factory.model('App/Models/User').create()
     const userToken = await Factory.model('App/Models/Token')
@@ -21,13 +21,10 @@ test('it should return status 201 when new token to confirm register is requeste
 
     await user.reload()
 
-    const countTokens = await user.tokens().count('* as total')
-
-    const token = await user.tokens().first()
+    const countTokens = await user.tokens().where('type', 'confirm_register').count('* as total')
 
     response.assertStatus(201)
     response.assertText('Resubmitted email to confirm register')
-    assert.isNotNull(token)
     assert.equal(1, countTokens[0].total)
   })
 
